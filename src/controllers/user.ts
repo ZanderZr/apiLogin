@@ -21,10 +21,13 @@ export const deleteUser = async (req: Request, res: Response) => {
   }
 }
 
+// Registro. 
 export const register = async (req: Request, res: Response) => {
   const { username, email } = req.body;
   try {
-    const user = await User.findOne({
+
+    // Busca en la BD un usuario cuyo nombre de usuario o email coincida con los introducidos
+    const user = await User.findOne({ 
       where: {
         [Op.or]: [
           { username: username },
@@ -35,7 +38,8 @@ export const register = async (req: Request, res: Response) => {
 
     if (!user) {
 
-      await User.create(req.body);
+      // Si no existe lo crea
+      await User.create(req.body); 
       res.json({
         msg: 'Usuario agregado con exito.'
       });
@@ -50,11 +54,14 @@ export const register = async (req: Request, res: Response) => {
   }
 }
 
+// Login
 export const login = async (req: Request, res: Response) => {
 
   const { email, password } = req.body;
 
   try {
+
+    // Busca un usuario cuyo email coincida con el email introducido
     const user = await User.findOne({ where: { email: email } });
 
     if (user && user.password === password) {
@@ -77,7 +84,7 @@ export const getUser = async (req: Request, res: Response) => {
 
   try {
     // Verificar y decodificar el token
-    const decoded = jwt.verify(token, 'your-secret-key');
+    const decoded = jwt.verify(token, 'jcKey');
     const userId = (decoded as any).id;
 
     // Buscar al usuario en la base de datos

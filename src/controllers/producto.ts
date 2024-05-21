@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import Producto from '../models/producto';
 
+// Obtiene todos los productos
 export const getProducts = async (req: Request, res: Response) =>{
 
     const listProducts = await Producto.findAll();
