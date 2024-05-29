@@ -31,8 +31,9 @@ export const deleteProduct = async (req: Request, res: Response) =>{
     const product = await Producto.findByPk(id);
 
      if(product) {
+        if(product.imagen){
         await fs.unlink(product.imagen); // Elimina la imagen de la carpeta uploads
-
+        }
         await product.destroy();
         res.json({
             msg: `Producto eliminado con exito. Id: ${id}`

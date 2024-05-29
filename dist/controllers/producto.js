@@ -38,7 +38,9 @@ const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     const { id } = req.params;
     const product = yield producto_1.default.findByPk(id);
     if (product) {
-        yield fs_extra_1.default.unlink(product.imagen); // Elimina la imagen de la carpeta uploads
+        if (product.imagen) {
+            yield fs_extra_1.default.unlink(product.imagen); // Elimina la imagen de la carpeta uploads
+        }
         yield product.destroy();
         res.json({
             msg: `Producto eliminado con exito. Id: ${id}`
