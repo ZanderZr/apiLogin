@@ -73,13 +73,21 @@ export const postProduct = async (req: Request, res: Response) =>{
 
 export const updateProduct = async (req: Request, res: Response) =>{
     
-    const { body } = req;
+    const { nombre, genero, precio, nota} = req.body;
     const { id } = req.params;
     const product = await Producto.findByPk(id);
 
+    const editedProduct = {
+        nombre: nombre,
+        genero: genero,
+        precio: precio,
+        nota: nota,
+        imagen: req.file?.path
+    };
+
     if(product) {
         try {
-            await product.update(body);
+            await product.update(editedProduct);
 
         res.json({
             msg: `Producto actualizado con exito`

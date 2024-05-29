@@ -20,7 +20,7 @@ const Producto = db.define<IProducto>('Videojuego', {
         type: DataTypes.DOUBLE
     },
     nota: {
-        type: DataTypes.DECIMAL
+        type: DataTypes.FLOAT
     },
     imagen: {
         type: DataTypes.STRING,

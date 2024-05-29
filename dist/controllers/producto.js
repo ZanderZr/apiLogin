@@ -76,12 +76,20 @@ const postProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.postProduct = postProduct;
 const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { body } = req;
+    var _b;
+    const { nombre, genero, precio, nota } = req.body;
     const { id } = req.params;
     const product = yield producto_1.default.findByPk(id);
+    const editedProduct = {
+        nombre: nombre,
+        genero: genero,
+        precio: precio,
+        nota: nota,
+        imagen: (_b = req.file) === null || _b === void 0 ? void 0 : _b.path
+    };
     if (product) {
         try {
-            yield product.update(body);
+            yield product.update(editedProduct);
             res.json({
                 msg: `Producto actualizado con exito`
             });

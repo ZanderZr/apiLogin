@@ -8,6 +8,6 @@ router.get('/', getProducts);
 router.get('/:id', getProduct);
 router.delete('/:id', deleteProduct);
 router.post('/', multer.single('imagen') ,postProduct);
-router.put('/:id', updateProduct);
+router.put('/:id', multer.single('imagen'), updateProduct);
 
 export default router;
