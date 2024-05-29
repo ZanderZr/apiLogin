@@ -56,38 +56,34 @@ export const register = async (req: Request, res: Response) => {
 
 // Login
 export const login = async (req: Request, res: Response) => {
-
   const { email, password } = req.body;
 
   try {
-
-    // Busca un usuario cuyo email coincida con el email introducido
     const user = await User.findOne({ where: { email: email } });
 
     if (user && user.password === password) {
-      const token = jwt.sign({ id: user.id }, 'jcKey', { expiresIn: '1h' }); // Genera un token
-
+      const token = jwt.sign({ id: user.id }, 'jcKey', { expiresIn: '1h' });
       res.json({ token: token });
-
     } else {
       res.status(401).json({ message: 'Email o contraseña incorrectos' });
     }
-  } catch {
-    console.error(Error);
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Error del servidor' });
   }
 }
 
 export const getUser = async (req: Request, res: Response) => {
-
   const { token } = req.body;
 
   try {
-    // Verificar y decodificar el token
+    if (!token) {
+      return res.status(400).json({ message: 'No se proporcionó ningún token' });
+    }
+
     const decoded = jwt.verify(token, 'jcKey');
     const userId = (decoded as any).id;
 
-    // Buscar al usuario en la base de datos
     const user = await User.findByPk(userId);
 
     if (user) {
@@ -97,6 +93,12 @@ export const getUser = async (req: Request, res: Response) => {
     }
   } catch (error) {
     console.error(error);
-    res.status(400).json({ message: 'Token inválido o expirado' });
+    if (error instanceof jwt.JsonWebTokenError) {
+      res.status(400).json({ message: 'Token inválido' });
+    } else if (error instanceof jwt.TokenExpiredError) {
+      res.status(400).json({ message: 'Token expirado' });
+    } else {
+      res.status(400).json({ message: 'Error desconocido al verificar el token' });
+    }
   }
 }

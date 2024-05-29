@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import Producto from '../models/producto';
+import path from 'path';
+import fs from 'fs-extra';
 
 // Obtiene todos los productos
 export const getProducts = async (req: Request, res: Response) =>{
@@ -29,6 +31,8 @@ export const deleteProduct = async (req: Request, res: Response) =>{
     const product = await Producto.findByPk(id);
 
      if(product) {
+        await fs.unlink(product.imagen); // Elimina la imagen de la carpeta uploads
+
         await product.destroy();
         res.json({
             msg: `Producto eliminado con exito. Id: ${id}`
@@ -42,13 +46,24 @@ export const deleteProduct = async (req: Request, res: Response) =>{
 
 export const postProduct = async (req: Request, res: Response) =>{
 
-    const { body } = req;
+    const { nombre, genero, precio, nota} = req.body;
+
+    console.log(req.file)
+
+    const newProduct = {
+        nombre: nombre,
+        genero: genero,
+        precio: precio,
+        nota: nota,
+        imagen: req.file?.path
+    };
 
     try {
-        await Producto.create(body);
+        await Producto.create(newProduct);
 
     res.json({
-        msg: 'Producto agregado con exito.'
+        msg: 'Producto agregado con exito.',
+        newProduct
     })
     } catch (error) {
         console.log(error);

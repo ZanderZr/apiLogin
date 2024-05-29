@@ -16,7 +16,9 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const producto_1 = __importDefault(require("../routes/producto"));
 const user_1 = __importDefault(require("../routes/user"));
+const favorite_1 = __importDefault(require("../routes/favorite"));
 const conection_1 = __importDefault(require("../db/conection"));
+const path_1 = __importDefault(require("path"));
 // Definición de la clase Server
 class Server {
     // Constructor de la clase. Inicializa una nueva instancia de Express y la asigna a la propiedad 'app'. Inicializa listen()
@@ -44,6 +46,9 @@ class Server {
         });
         this.app.use('/api/productos', producto_1.default);
         this.app.use('/api/users', user_1.default);
+        this.app.use('/api/favorites', favorite_1.default);
+        // Servir archivos estáticos desde la carpeta 'uploads'
+        this.app.use('/uploads', express_1.default.static(path_1.default.resolve('uploads')));
     }
     midlewares() {
         // Paresear el body

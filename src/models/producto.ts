@@ -1,7 +1,15 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 import db from '../db/conection';
 
-const Producto = db.define('Videojuego', {
+interface IProducto extends Model {
+    nombre: string,
+    genero: string,
+    precio: number,
+    nota: number,
+    imagen: string
+}
+
+const Producto = db.define<IProducto>('Videojuego', {
     nombre: {
         type: DataTypes.STRING
     },
@@ -13,6 +21,10 @@ const Producto = db.define('Videojuego', {
     },
     nota: {
         type: DataTypes.DECIMAL
+    },
+    imagen: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
 
 }, {

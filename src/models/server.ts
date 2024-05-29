@@ -2,7 +2,11 @@ import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import routesProducto from '../routes/producto';
 import routesUser from '../routes/user';
+import routesFavorite from '../routes/favorite';
 import db from '../db/conection';
+import multer from 'multer';
+import fs from 'fs';
+import path from 'path';
 
 // Definición de la clase Server
 class Server {
@@ -40,6 +44,9 @@ class Server {
         
         this.app.use('/api/productos', routesProducto)
         this.app.use('/api/users', routesUser)
+        this.app.use('/api/favorites', routesFavorite)
+        // Servir archivos estáticos desde la carpeta 'uploads'
+        this.app.use('/uploads', express.static(path.resolve('uploads')));
     }
 
     midlewares() {

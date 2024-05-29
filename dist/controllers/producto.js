@@ -14,6 +14,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateProduct = exports.postProduct = exports.deleteProduct = exports.getProduct = exports.getProducts = void 0;
 const producto_1 = __importDefault(require("../models/producto"));
+const fs_extra_1 = __importDefault(require("fs-extra"));
+// Obtiene todos los productos
 const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const listProducts = yield producto_1.default.findAll();
     res.json(listProducts);
@@ -36,6 +38,7 @@ const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     const { id } = req.params;
     const product = yield producto_1.default.findByPk(id);
     if (product) {
+        yield fs_extra_1.default.unlink(product.imagen); // Elimina la imagen de la carpeta uploads
         yield product.destroy();
         res.json({
             msg: `Producto eliminado con exito. Id: ${id}`
@@ -49,11 +52,21 @@ const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.deleteProduct = deleteProduct;
 const postProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { body } = req;
+    var _a;
+    const { nombre, genero, precio, nota } = req.body;
+    console.log(req.file);
+    const newProduct = {
+        nombre: nombre,
+        genero: genero,
+        precio: precio,
+        nota: nota,
+        imagen: (_a = req.file) === null || _a === void 0 ? void 0 : _a.path
+    };
     try {
-        yield producto_1.default.create(body);
+        yield producto_1.default.create(newProduct);
         res.json({
-            msg: 'Producto agregado con exito.'
+            msg: 'Producto agregado con exito.',
+            newProduct
         });
     }
     catch (error) {

@@ -17,6 +17,10 @@ const Producto = conection_1.default.define('Videojuego', {
     },
     nota: {
         type: sequelize_1.DataTypes.DECIMAL
+    },
+    imagen: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true
     }
 }, {
     createdAt: false,
