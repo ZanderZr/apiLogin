@@ -33,17 +33,23 @@ export const getFavorites = async (req: Request, res: Response) => {
 
 export const deleteFavorite = async (req: Request, res: Response) => {
 
-    const { id } = req.params;
-    const favorite = await Favorite.findByPk(id);
+    const { idUser, idVideojuego } = req.params;
+
+    const favorite = await Favorite.findOne({
+        where: {
+            idUser: idUser,
+            idVideojuego: idVideojuego
+        }
+    });
 
     if (favorite) {
         await favorite.destroy();
         res.json({
-            msg: `Favorito eliminado con exito. Id: ${id}`
+            msg: `Favorito eliminado con exito. Id: ${favorite.id}`
         });
     } else {
         res.status(404).json({
-            msg: `No existe un favorito con el id: ${id}`
+            msg: `No existe un favorito`
         })
     }
 };

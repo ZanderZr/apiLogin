@@ -42,17 +42,22 @@ const getFavorites = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 });
 exports.getFavorites = getFavorites;
 const deleteFavorite = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const favorite = yield favorite_1.default.findByPk(id);
+    const { idUser, idVideojuego } = req.params;
+    const favorite = yield favorite_1.default.findOne({
+        where: {
+            idUser: idUser,
+            idVideojuego: idVideojuego
+        }
+    });
     if (favorite) {
         yield favorite.destroy();
         res.json({
-            msg: `Favorito eliminado con exito. Id: ${id}`
+            msg: `Favorito eliminado con exito. Id: ${favorite.id}`
         });
     }
     else {
         res.status(404).json({
-            msg: `No existe un favorito con el id: ${id}`
+            msg: `No existe un favorito`
         });
     }
 });
