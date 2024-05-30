@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import Producto from '../models/producto';
 import path from 'path';
 import fs from 'fs-extra';
+import { Op } from 'sequelize';
 
 // Obtiene todos los productos
 export const getProducts = async (req: Request, res: Response) =>{
@@ -24,6 +25,23 @@ export const getProduct = async (req: Request, res: Response) =>{
         })
     }
 }
+
+export const getProductsSearch = async (req: Request, res: Response) => { 
+    try {
+        const { nombre } = req.params;
+        const products = await Producto.findAll({
+            where: {
+                nombre: {
+                    [Op.like]: `%${nombre}%` // Búsqueda de productos cuyo nombre contenga la cadena de búsqueda
+                }
+            }
+        });
+        res.json(products); // Enviar los productos encontrados como respuesta
+    } catch (error) {
+        console.error('Error al buscar productos:', error);
+        res.status(500).json({ error: 'Error interno del servidor' }); // Manejar errores internos del servidor
+    }
+};
 
 export const deleteProduct = async (req: Request, res: Response) =>{
 

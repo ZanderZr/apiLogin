@@ -12,9 +12,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateProduct = exports.postProduct = exports.deleteProduct = exports.getProduct = exports.getProducts = void 0;
+exports.updateProduct = exports.postProduct = exports.deleteProduct = exports.getProductsSearch = exports.getProduct = exports.getProducts = void 0;
 const producto_1 = __importDefault(require("../models/producto"));
 const fs_extra_1 = __importDefault(require("fs-extra"));
+const sequelize_1 = require("sequelize");
 // Obtiene todos los productos
 const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const listProducts = yield producto_1.default.findAll();
@@ -34,6 +35,24 @@ const getProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.getProduct = getProduct;
+const getProductsSearch = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { nombre } = req.params;
+        const products = yield producto_1.default.findAll({
+            where: {
+                nombre: {
+                    [sequelize_1.Op.like]: `%${nombre}%` // Búsqueda de productos cuyo nombre contenga la cadena de búsqueda
+                }
+            }
+        });
+        res.json(products); // Enviar los productos encontrados como respuesta
+    }
+    catch (error) {
+        console.error('Error al buscar productos:', error);
+        res.status(500).json({ error: 'Error interno del servidor' }); // Manejar errores internos del servidor
+    }
+});
+exports.getProductsSearch = getProductsSearch;
 const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const product = yield producto_1.default.findByPk(id);

@@ -12,4 +12,5 @@ router.get('/:id', producto_1.getProduct);
 router.delete('/:id', producto_1.deleteProduct);
 router.post('/', multer_1.default.single('imagen'), producto_1.postProduct);
 router.put('/:id', multer_1.default.single('imagen'), producto_1.updateProduct);
+router.get('/search/:nombre', producto_1.getProductsSearch);
 exports.default = router;
